@@ -1,5 +1,5 @@
 --[[
-    		Compkiller Interface
+    		Fatality-Dark Interface
 
     Author: 4lpaca
     License: MIT
@@ -2652,14 +2652,16 @@ function Compkiller:_LoadOption(Value , TabSignal)
 					end;
 				end;
 			end;
+			
+			local KeyName = typeof(Selected) == "string" and Selected or Selected.Name;
 
-			Config.Default = Selected;
+			Config.Default = KeyName;
 
 			Keybind.SetValue(Selected);
 
 			IsBinding = false;
 
-			Config.Callback(typeof(Selected) == "string" and Selected or Selected.Name);
+			Config.Callback(KeyName);
 		end);
 
 		local Args = {};
@@ -2670,7 +2672,7 @@ function Compkiller:_LoadOption(Value , TabSignal)
 			Config.Default = value;
 
 			Keybind.SetValue(Config.Default);
-
+		
 			Config.Callback(Config.Default);
 		end;
 		
@@ -2798,7 +2800,9 @@ function Compkiller:_LoadOption(Value , TabSignal)
 			Config.Transparency = opc;
 
 			ColorPicker:SetColor(value,opc)
-
+			
+			ColorPicker:Update()
+			
 			Config.Callback(value,opc);
 		end;
 		
@@ -3409,14 +3413,16 @@ function Compkiller:_LoadElement(Parent: Frame , EnabledLine: boolean , Signal)
 					end;
 				end;
 			end;
-
-			Config.Default = Selected;
+			
+			local KeyName = typeof(Selected) == "string" and Selected or Selected.Name;
+			
+			Config.Default = KeyName;
 
 			Keybind.SetValue(Selected);
 
 			IsBinding = false;
 
-			Config.Callback(typeof(Selected) == "string" and Selected or Selected.Name);
+			Config.Callback(KeyName);
 		end);
 
 		local Args = {};
@@ -3493,7 +3499,9 @@ function Compkiller:_LoadElement(Parent: Frame , EnabledLine: boolean , Signal)
 			Config.Transparency = opc;
 			
 			ColorPicker:SetColor(value,opc)
-
+			
+			ColorPicker:Update()
+			
 			Config.Callback(value,opc);
 		end;
 
