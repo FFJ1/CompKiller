@@ -307,7 +307,7 @@ local Mouse = LocalPlayer:GetMouse();
 local CurrentCamera = workspace.CurrentCamera;
 
 local Compkiller = {
-	Version = '1.1',
+	Version = '1.2',
 	Logo = "rbxassetid://120245531583106",
 	Windows = {},
 	Scale = {
@@ -1246,7 +1246,7 @@ function Compkiller:_Blur(element : Frame , WindowRemote) : RBXScriptSignal
 	DepthOfField.Name = Compkiller:_RandomString();
 
 	Part.Name = Compkiller:_RandomString();
-	
+
 	local UpdateFunction = function()
 		local IsWindowActive = WindowRemote:GetValue();
 
@@ -1269,7 +1269,7 @@ function Compkiller:_Blur(element : Frame , WindowRemote) : RBXScriptSignal
 				Size = Vector3.zero,
 				Transparency = 1.5,
 			})
-			
+
 			return false;
 		end;
 
@@ -1305,13 +1305,13 @@ function Compkiller:_Blur(element : Frame , WindowRemote) : RBXScriptSignal
 			pcall(UpdateFunction);
 		end;
 	end);
-	
+
 	local THREAD = task.spawn(function()
 		while true do task.wait(0.1)
 			pcall(UpdateFunction);
 		end;
 	end);
-	
+
 	element.Destroying:Connect(function()
 		rbxsignal:Disconnect();
 		loopThread:Disconnect();
@@ -3067,7 +3067,7 @@ function Compkiller:_LoadDropdown(BaseParent: TextButton , Callback: () -> any)
 		if MainPosition.Y.Offset > MUL then -- go up
 			MainPosition = UDim2.fromOffset(BaseParent.AbsolutePosition.X + 1,BaseParent.AbsolutePosition.Y + 55);
 			DropPosition = UDim2.fromOffset(MainPosition.X.Offset,MainPosition.Y.Offset - 25);
-			
+
 			DropdownWindow.AnchorPoint = Vector2.new(0,1);
 		else
 			DropdownWindow.AnchorPoint = Vector2.zero;
@@ -3362,7 +3362,7 @@ function Compkiller:_LoadElement(Parent: Frame , EnabledLine: boolean , Signal)
 			Config.Default = value;
 
 			Toggle.ChangeValue(Config.Default);
-			
+
 			Block:SetTransparency((Config.Default and 0.1) or 0.3);
 
 			Config.Callback(Config.Default);
@@ -6997,7 +6997,7 @@ function Compkiller.new(Config : Window)
 
 		local ToggleCloseUI = function(v)
 			ImageLabel.Image = Config.Logo;
-			
+
 			if v then
 				ImageLabel.ClipsDescendants = true;
 
@@ -7283,8 +7283,13 @@ function Compkiller.new(Config : Window)
 		ExpireText.Text = config.ExpireDate;
 		WindowLabel.Text = config.WindowName;
 		UserProfile.Image = config.UserProfile;
-
 		WindowArgs.Username = config.Username;
+		
+		Config.Logo = config.Logo or Config.Logo;
+		WindowArgs.Username = config.Username or WindowArgs.Username;
+		WindowArgs.ExipreDate = config.ExpireDate or WindowArgs.ExipreDate;
+		Config.Name = config.WindowName or Config.Name;
+		WindowArgs.Profile = config.UserProfile or WindowArgs.Profile;
 	end;
 
 	WindowArgs.LOOP_THREAD = task.spawn(function()
