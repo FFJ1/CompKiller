@@ -4497,7 +4497,7 @@ function Compkiller.new(Config : Window)
 	
 	UICorner.Parent = MainFrame
 	
-	local TabFrameBaseTrans = 0.035
+	local TabFrameBaseTrans = 0.065
 	TabFrame.Active = true
 	TabFrame.Name = "TabFrame"
 	TabFrame.Parent = MainFrame
