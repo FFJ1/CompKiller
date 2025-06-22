@@ -3239,12 +3239,12 @@ function Compkiller:_LoadDropdown(BaseParent: TextButton , Callback: () -> any)
 	end;
 	
 	BaseParent.MouseButton1Click:Connect(function()
-		ToggleUI(true);
-		
 		if SpamUpdate then
 			ClearDropdown();
 			UpdateDropdown();
 		end;
+		
+		ToggleUI(true);
 		
 		if not ToggleDb:GetValue() then
 			ToggleUI(false);
@@ -4497,7 +4497,8 @@ function Compkiller.new(Config : Window)
 	
 	UICorner.Parent = MainFrame
 	
-	local TabFrameBaseTrans = 0.125
+	local TabFrameBaseTrans = 0.25;
+
 	TabFrame.Active = true
 	TabFrame.Name = "TabFrame"
 	TabFrame.Parent = MainFrame
