@@ -3444,7 +3444,7 @@ function Compkiller:_LoadElement(Parent: Frame , EnabledLine: boolean , Signal)
 		Args.Link = Compkiller:_LoadOption(Block);
 		
 		function Args:GetValue()
-			return Config.Default;
+			return (typeof(Config.Default) == "string" and Config.Default) or Config.Default.Name;
 		end;
 		
 		if Config.Flag then
