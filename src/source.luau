@@ -2653,7 +2653,7 @@ function Compkiller:_LoadOption(Value , TabSignal)
 				end;
 			end;
 			
-			local KeyName = typeof(Selected) == "string" and Selected or Selected.Name;
+			local KeyName = (typeof(Selected) == "string" and Selected) or Selected.Name;
 
 			Config.Default = KeyName;
 
@@ -2677,7 +2677,7 @@ function Compkiller:_LoadOption(Value , TabSignal)
 		end;
 		
 		function Args:GetValue()
-			return Config.Default;
+			return (typeof(Config.Default) == "string" and Config.Default) or Config.Default.Name;
 		end;
 
 		if Config.Flag then
