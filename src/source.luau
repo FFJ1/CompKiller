@@ -4305,7 +4305,7 @@ function Compkiller:_LoadElement(Parent: Frame , EnabledLine: boolean , Signal)
 			Config.Callback(Value);
 		end;
 
-		function repi:SetValues(v)
+		function Args:SetValues(v)
 			Config.Values = v;
 
 			repi:SetData(Config.Default,Config.Values,Config.Multi,true);
