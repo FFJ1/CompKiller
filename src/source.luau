@@ -4497,12 +4497,13 @@ function Compkiller.new(Config : Window)
 	
 	UICorner.Parent = MainFrame
 	
+	local TabFrameBaseTrans = 0.035
 	TabFrame.Active = true
 	TabFrame.Name = "TabFrame"
 	TabFrame.Parent = MainFrame
 	TabFrame.AnchorPoint = Vector2.new(1, 0)
 	TabFrame.BackgroundColor3 = Color3.fromRGB(22, 24, 29)
-	TabFrame.BackgroundTransparency = 0.035
+	TabFrame.BackgroundTransparency = TabFrameBaseTrans
 	TabFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	TabFrame.BorderSizePixel = 0
 	TabFrame.ClipsDescendants = true
@@ -4696,7 +4697,7 @@ function Compkiller.new(Config : Window)
 			})
 			
 			Compkiller:_Animation(TabFrame,TweenInfo.new(0.2),{
-				BackgroundTransparency = 0.25
+				BackgroundTransparency = TabFrameBaseTrans
 			})
 		else
 			Compkiller:_Animation(MainFrame,TweenInfo.new(0.2),{
