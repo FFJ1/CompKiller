@@ -7302,7 +7302,7 @@ function Compkiller.new(Config : Window)
 			Property = "BackgroundColor3"
 		});
 		
-		while true do RunService.Heartbeat:Wait();
+		while true do task.wait(0.0001);
 			BlurElement.Size = UDim2.new(1, TabFrame.AbsoluteSize.X - 35, 1, 0);
 			MovementFrame.Size = UDim2.new(1, TabFrame.AbsoluteSize.X - 35, 1, 0);
 			
