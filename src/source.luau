@@ -4502,7 +4502,7 @@ function Compkiller.new(Config : Window)
 	TabFrame.Parent = MainFrame
 	TabFrame.AnchorPoint = Vector2.new(1, 0)
 	TabFrame.BackgroundColor3 = Color3.fromRGB(22, 24, 29)
-	TabFrame.BackgroundTransparency = 0.15
+	TabFrame.BackgroundTransparency = 0.075
 	TabFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	TabFrame.BorderSizePixel = 0
 	TabFrame.ClipsDescendants = true
