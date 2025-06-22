@@ -4527,7 +4527,7 @@ function Compkiller.new(Config : Window)
 	CompLogo.BackgroundTransparency = 1.000
 	CompLogo.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	CompLogo.BorderSizePixel = 0
-	CompLogo.Position = UDim2.new(0, 8, 0, 7)
+	CompLogo.Position = UDim2.new(0, 9, 0, 7)
 	CompLogo.Size = UDim2.new(0, 45, 0, 45)
 	CompLogo.Image = Config.Logo
 
