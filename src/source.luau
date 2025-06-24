@@ -8557,7 +8557,7 @@ function Compkiller.newNotify()
 			Header.ZIndex = 3
 			Header.Font = Enum.Font.GothamBold
 			Header.Text = Notify.Title
-			Header.TextColor3 = Color3.fromRGB(255, 255, 255)
+			Header.TextColor3 = Compkiller.Colors.SwitchColor
 			Header.TextSize = 14.000
 			Header.TextXAlignment = Enum.TextXAlignment.Left
 
@@ -8572,7 +8572,7 @@ function Compkiller.newNotify()
 			Body.ZIndex = 3
 			Body.Font = Enum.Font.GothamMedium
 			Body.Text = Notify.Content
-			Body.TextColor3 = Color3.fromRGB(255, 255, 255)
+			Body.TextColor3 = Compkiller.Colors.SwitchColor
 			Body.TextSize = 12.000
 			Body.TextTransparency = 0.500
 			Body.TextXAlignment = Enum.TextXAlignment.Left
@@ -8594,7 +8594,7 @@ function Compkiller.newNotify()
 
 			TimeLeft.Name = "TimeLeft"
 			TimeLeft.Parent = TimeLeftFrame
-			TimeLeft.BackgroundColor3 = Color3.fromRGB(17, 238, 253)
+			TimeLeft.BackgroundColor3 = Compkiller.Colors.Highlight
 			TimeLeft.BorderColor3 = Color3.fromRGB(0, 0, 0)
 			TimeLeft.BorderSizePixel = 0
 			TimeLeft.Size = UDim2.new(0, 0, 1, 0)
