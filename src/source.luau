@@ -8490,6 +8490,8 @@ function Compkiller.newNotify()
 	UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
 	UIListLayout.Padding = UDim.new(0, 3)
 	
+	local LayoutREF = 0;
+	
 	return {
 		new = function(Notify: Notify)
 			Notify = Compkiller.__CONFIG(Notify, {
@@ -8498,6 +8500,8 @@ function Compkiller.newNotify()
 				Content = "Content",
 				Duration = 5,
 			});
+			
+			LayoutREF -= 5;
 			
 			local BlockFrame = Instance.new("Frame")
 			local NotifyFrame = Instance.new("Frame")
@@ -8519,7 +8523,7 @@ function Compkiller.newNotify()
 			BlockFrame.BorderSizePixel = 0
 			BlockFrame.ClipsDescendants = false
 			BlockFrame.Size = UDim2.new(0, 200, 0, 0)
-			BlockFrame.LayoutOrder = -#NotifyContainer:GetChildren();
+			BlockFrame.LayoutOrder = LayoutREF;
 
 			NotifyFrame.Name = "NotifyFrame"
 			NotifyFrame.Parent = BlockFrame
