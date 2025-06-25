@@ -3897,9 +3897,7 @@ function Compkiller:_LoadElement(Parent: Frame , EnabledLine: boolean , Signal)
 		local UIScale = Instance.new("UIScale")
 		local ValueText = Instance.new("TextLabel")
 		
-		if Compkiller:_IsMobile() then
-			Compkiller:_AddDragBlacklist(Slider);
-		end;
+		Compkiller:_AddDragBlacklist(Slider);
 		
 		Slider.Name = "Slider"
 		Slider.Parent = Parent
