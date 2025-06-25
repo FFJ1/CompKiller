@@ -371,7 +371,9 @@ Compkiller.Elements = {
 	HighStrokeColor = {},
 };
 
-Compkiller.DragBlacklist = 0;
+Compkiller.DragBlacklist = {};
+Compkiller.IaDrag = false;
+Compkiller.LastDrag = tick();
 Compkiller.Flags = {};
 
 Compkiller.Lucide = {
@@ -1365,31 +1367,37 @@ end;
 
 function Compkiller:_AddDragBlacklist(Frame: Frame)
 	local IsAdded = false;
+	local BASE_TIME = 0.01;
+	
+	local SET_BLACKLIST = function(value)
+		local index = table.find(Compkiller.DragBlacklist , Frame);
+		
+		if value and not Compkiller.IS_DRAGE_MOVE then
+			if not index then
+				table.insert(Compkiller.DragBlacklist,Frame);
+			end;
+		else
+			if index then
+				table.remove(Compkiller.DragBlacklist,index);
+			end;
+		end;
+	end;
+	
 	Frame.InputBegan:Connect(function(input)
-		if not IsAdded then
-			IsAdded = true;
-			
-			Compkiller.DragBlacklist += 1;
+		if Compkiller:_IsMouseOverFrame(Frame) then
+			SET_BLACKLIST(true)
 		end;
 	end);
 
 	Frame.InputEnded:Connect(function(input)
-		if IsAdded then
-			IsAdded = false;
-
-			Compkiller.DragBlacklist -= 1;
-		end;
+		SET_BLACKLIST(false);
 	end);
 	
-	Frame.InputChanged:Connect(function()
+	UserInputService.InputChanged:Connect(function()
 		if not Compkiller:_IsMouseOverFrame(Frame) then
-			if IsAdded then
-				IsAdded = false;
-
-				Compkiller.DragBlacklist -= 1;
-			end;
+			SET_BLACKLIST(false);
 		end
-	end)
+	end);
 end;
 
 function Compkiller:_GetWindowFromElement(Element)
@@ -1473,28 +1481,41 @@ function Compkiller:Drag(InputFrame: Frame, MoveFrame: Frame, Speed : number)
 	end;
 
 	InputFrame.InputBegan:Connect(function(input)
-		if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) and Compkiller.DragBlacklist <= 0 then 
+		if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) and #Compkiller.DragBlacklist <= 0 then 
 			dragToggle = true
 			dragStart = input.Position
 			startPos = MoveFrame.Position
 			input.Changed:Connect(function()
 				if input.UserInputState == Enum.UserInputState.End then
-					dragToggle = false
+					dragToggle = false;
+					Compkiller.IS_DRAGE_MOVE = false;
 				end
 			end)
 		end
+		
+		if not Compkiller.IsDrage and dragToggle then
+			Compkiller.LastDrag = tick();
+		end;
+		
+		Compkiller.IaDrag = dragToggle;
 	end)
 
 	UserInputService.InputChanged:Connect(function(input)
-		if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch and Compkiller.DragBlacklist <= 0 then
+		if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch and #Compkiller.DragBlacklist <= 0 then
 			if dragToggle then
+				Compkiller.IS_DRAGE_MOVE = true;
 				updateInput(input)
+			else
+				Compkiller.IS_DRAGE_MOVE = false;
 			end
 		else
-			if Compkiller.DragBlacklist > 0 then
+			if #Compkiller.DragBlacklist > 0 then
 				dragToggle = false
+				Compkiller.IS_DRAGE_MOVE = false;
 			end
 		end
+		
+		Compkiller.IaDrag = dragToggle;
 	end);
 end;
 
@@ -5314,6 +5335,10 @@ function Compkiller.new(Config : Window)
 	TabMainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
 	TabMainFrame.Size = UDim2.new(1, 0, 1, 0)
 	TabMainFrame.ZIndex = 5
+	
+	if Compkiller:_IsMobile() then
+		Compkiller:_AddDragBlacklist(TabButtons);
+	end;
 
 	WindowOpen:Connect(function(v)
 		if WindowArgs.PerformanceMode then
