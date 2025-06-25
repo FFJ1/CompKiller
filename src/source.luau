@@ -5931,8 +5931,14 @@ function Compkiller.new(Config : Window)
 	end;
 
 	function WindowArgs:AddUnbind(UilistLayout: UIListLayout , Scrolling)
+	    
+	    UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+	        Scrolling.ScrollingEnabled = true
+	        UilistLayout.VerticalFlex = Enum.UIFlexAlignment.None;
+	        Scrolling.CanvasSize = UDim2.fromOffset(0,UilistLayout.AbsoluteContentSize.Y + 5)
+	    end)
 
-		local Parent: ScrollingFrame = UilistLayout.Parent;
+		--[[local Parent: ScrollingFrame = UilistLayout.Parent;
 
 		Parent = Parent or Scrolling;
 
@@ -5959,7 +5965,7 @@ function Compkiller.new(Config : Window)
 			end;
 		end;
 
-		table.insert(WindowArgs.THREADS,task.spawn(Executable))
+		table.insert(WindowArgs.THREADS,task.spawn(Executable))]]
 	end;
 
 	function WindowArgs:DrawConfig(Configuration : TabConfigManager , Internal)
