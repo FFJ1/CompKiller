@@ -1372,7 +1372,7 @@ function Compkiller:_AddDragBlacklist(Frame: Frame)
 	local SET_BLACKLIST = function(value)
 		local index = table.find(Compkiller.DragBlacklist , Frame);
 		
-		if value and not Compkiller.IS_DRAGE_MOVE then
+		if value and not Compkiller.IS_DRAG_MOVE then
 			if not index then
 				table.insert(Compkiller.DragBlacklist,Frame);
 			end;
@@ -1488,7 +1488,7 @@ function Compkiller:Drag(InputFrame: Frame, MoveFrame: Frame, Speed : number)
 			input.Changed:Connect(function()
 				if input.UserInputState == Enum.UserInputState.End then
 					dragToggle = false;
-					Compkiller.IS_DRAGE_MOVE = false;
+					Compkiller.IS_DRAG_MOVE = false;
 				end
 			end)
 		end
@@ -1503,15 +1503,15 @@ function Compkiller:Drag(InputFrame: Frame, MoveFrame: Frame, Speed : number)
 	UserInputService.InputChanged:Connect(function(input)
 		if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch and #Compkiller.DragBlacklist <= 0 then
 			if dragToggle then
-				Compkiller.IS_DRAGE_MOVE = true;
+				Compkiller.IS_DRAG_MOVE = true;
 				updateInput(input)
 			else
-				Compkiller.IS_DRAGE_MOVE = false;
+				Compkiller.IS_DRAG_MOVE = false;
 			end
 		else
 			if #Compkiller.DragBlacklist > 0 then
 				dragToggle = false
-				Compkiller.IS_DRAGE_MOVE = false;
+				Compkiller.IS_DRAG_MOVE = false;
 			end
 		end
 		
@@ -5581,7 +5581,11 @@ function Compkiller.new(Config : Window)
 		TabButton.ClipsDescendants = true
 		TabButton.Size = UDim2.new(1, -10, 0, 32)
 		TabButton.ZIndex = 3
-
+		
+		if Compkiller:_IsMobile() then
+			Compkiller:_AddDragBlacklist(TabButton);
+		end;
+		
 		Icon.Name = "Icon"
 		Icon.Parent = TabButton
 		Icon.AnchorPoint = Vector2.new(0, 0.5)
@@ -6046,7 +6050,11 @@ function Compkiller.new(Config : Window)
 		local TabNameLabel = Instance.new("TextLabel")
 		local Highlight = Instance.new("Frame")
 		local UICorner = Instance.new("UICorner")
-
+		
+		if Compkiller:_IsMobile() then
+			Compkiller:_AddDragBlacklist(TabButton);
+		end;
+		
 		TabButton.Name = "TabButton"
 		TabButton.Parent = TabButtonScrollingFrame
 		TabButton.BackgroundTransparency = 1.000
@@ -6735,7 +6743,9 @@ function Compkiller.new(Config : Window)
 			ConfigBlock.Size = UDim2.new(1, -1, 0, 40)
 			ConfigBlock.ZIndex = 10
 			
-			Compkiller:_AddDragBlacklist(ConfigBlock);
+			if Compkiller:_IsMobile() then
+				Compkiller:_AddDragBlacklist(ConfigBlock);
+			end;
 
 			ConfigText.Name = "ConfigText"
 			ConfigText.Parent = ConfigBlock
