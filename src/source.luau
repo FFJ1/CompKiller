@@ -330,7 +330,7 @@ local Mouse = LocalPlayer:GetMouse();
 local CurrentCamera = workspace.CurrentCamera;
 
 local Compkiller = {
-	Version = '1.4',
+	Version = '1.6',
 	Logo = "rbxassetid://120245531583106",
 	Windows = {},
 	Scale = {
@@ -2164,7 +2164,7 @@ end;
 function Compkiller:_AddColorPickerPanel(Button: ImageButton , Callback: (Color: Color3) -> any?)
 	local Window = Compkiller:_GetWindowFromElement(Button);
 	local BaseZ_Index = math.random(1,15) * 100;
-	
+
 	local ColorPickerWindow = Instance.new("Frame")
 	local UIStroke = Instance.new("UIStroke")
 	local UICorner = Instance.new("UICorner")
@@ -2775,7 +2775,7 @@ function Compkiller:_LoadOption(Value , TabSignal)
 	local Args = {};
 	local Window = Compkiller:_GetWindowFromElement(Value.Root);
 	local Tween = TweenInfo.new(0.3,Enum.EasingStyle.Quint);
-	
+
 	function Args:AddKeybind(Config: MiniKeybind)
 		Config = Compkiller.__CONFIG(Config,{
 			Name = "Keybind",
@@ -3028,7 +3028,7 @@ function Compkiller:_LoadOption(Value , TabSignal)
 	function Args:AddOption()
 		local Element: ImageButton = Value:AddLink("Option");
 		local BaseZ_Index = math.random(1,15) * 100;
-	
+
 		local Signal = Compkiller.__SIGNAL(false);
 
 		local ExtractElement = Instance.new("Frame")
@@ -3159,7 +3159,7 @@ end;
 function Compkiller:_LoadDropdown(BaseParent: TextButton , Callback: () -> any)
 	local Window = Compkiller:_GetWindowFromElement(BaseParent);
 	local BaseZ_Index = BaseParent.ZIndex + (math.random(1,15) * 100);
-	
+
 	local DropdownWindow = Instance.new("Frame")
 	local UIStroke = Instance.new("UIStroke")
 	local UICorner = Instance.new("UICorner")
@@ -3400,13 +3400,19 @@ function Compkiller:_LoadDropdown(BaseParent: TextButton , Callback: () -> any)
 			if IsMulti then
 				if IsDefault(v) or MatchDefault(v,DataFrame) then
 					DataFrame[v] = true;
+				else
+					DataFrame[v] = false;
 				end;
-
+				
+				Compkiller:_Animation(bth.BlockText,TweenInfo.new(0.2),{
+					TextTransparency = ((MatchDefault(v,DataFrame)) and 0) or 0.5
+				});
+				
 				Compkiller:_Input(bth.DropdownItem,function()
-					DataFrame[v] = not DataFrame[v]
+					DataFrame[v] = not DataFrame[v];
 
 					Compkiller:_Animation(bth.BlockText,TweenInfo.new(0.2),{
-						TextTransparency = ((IsDefault(v) or MatchDefault(v,DataFrame)) and 0) or 0.5
+						TextTransparency = ((MatchDefault(v,DataFrame)) and 0) or 0.5
 					});
 
 					Callback(DataFrame)
@@ -5492,7 +5498,11 @@ function Compkiller.new(Config : Window)
 		Category.BorderSizePixel = 0
 		Category.ClipsDescendants = true
 		Category.Size = UDim2.new(1, -10, 0, 22)
-
+		
+		if Compkiller:_IsMobile() then
+			Compkiller:_AddDragBlacklist(Category);
+		end;
+		
 		CategoryText.Name = "CategoryText"
 		CategoryText.Parent = Category
 		CategoryText.BackgroundTransparency = 1.000
@@ -6020,7 +6030,7 @@ function Compkiller.new(Config : Window)
 						Parent.ScrollingEnabled = true;
 					else
 						Parent.ScrollingEnabled = false;
-						UilistLayout.VerticalFlex = Enum.UIFlexAlignment.Fill;
+						UilistLayout.VerticalFlex = Enum.UIFlexAlignment.None;
 					end;
 				end
 			end;
@@ -7198,7 +7208,8 @@ function Compkiller.new(Config : Window)
 		local TabOpenSignal = Compkiller.__SIGNAL(false);
 		local TabArgs = {};
 		local Upvalue = {};
-
+		local BASE_PADDING = 10;
+		
 		if Internal then
 
 			local TabContent = Instance.new("Frame")
@@ -7214,7 +7225,7 @@ function Compkiller.new(Config : Window)
 			TabContent.BorderColor3 = Color3.fromRGB(0, 0, 0)
 			TabContent.BorderSizePixel = 0
 			TabContent.Position = UDim2.new(0.5, 0, 0.5, 0)
-			TabContent.Size = UDim2.new(1, 0,1, 0)
+			TabContent.Size = UDim2.new(1, -5,1, -5)
 			TabContent.ZIndex = 6
 
 			Left.Name = "Left"
@@ -7230,10 +7241,11 @@ function Compkiller.new(Config : Window)
 			Left.Size = UDim2.new(0.5, -3, 1, 0)
 			Left.ZIndex = 8
 			Left.BottomImage = ""
-			Left.CanvasSize = UDim2.new(0, 0, 0, 0)
 			Left.ScrollBarThickness = 0
 			Left.TopImage = ""
-
+			--Left.AutomaticCanvasSize = Enum.AutomaticSize.Y;
+			Left.CanvasSize = UDim2.new(0, 0, 0, 0)
+			
 			UIListLayout:GetPropertyChangedSignal('AbsoluteContentSize'):Connect(function()
 				Left.CanvasSize = UDim2.fromOffset(0,UIListLayout.AbsoluteContentSize.Y)
 			end)
@@ -7241,8 +7253,8 @@ function Compkiller.new(Config : Window)
 			UIListLayout.Parent = Left
 			UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 			UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
-			UIListLayout.VerticalFlex = Enum.UIFlexAlignment.Fill
-			UIListLayout.Padding = UDim.new(0, 10)
+			UIListLayout.VerticalFlex = Enum.UIFlexAlignment.None
+			UIListLayout.Padding = UDim.new(0, BASE_PADDING)
 
 			Right.Name = "Right"
 			Right.Parent = TabContent
@@ -7257,13 +7269,16 @@ function Compkiller.new(Config : Window)
 			Right.ZIndex = 8
 			Right.ScrollingEnabled = false
 			Right.BottomImage = ""
+			--Right.AutomaticCanvasSize = Enum.AutomaticSize.Y;
 			Right.CanvasSize = UDim2.new(0, 0, 0, 0)
 			Right.ScrollBarThickness = 0
 			Right.TopImage = ""
 
 			Upvalue.Left = Left;
 			Upvalue.Right = Right;
-
+			Upvalue.LeftLayout = UIListLayout;
+			Upvalue.RightLayout = UIListLayout_2;
+			
 			UIListLayout_2:GetPropertyChangedSignal('AbsoluteContentSize'):Connect(function()
 				Right.CanvasSize = UDim2.fromOffset(0,UIListLayout_2.AbsoluteContentSize.Y)
 			end)
@@ -7271,13 +7286,11 @@ function Compkiller.new(Config : Window)
 			UIListLayout_2.Parent = Right
 			UIListLayout_2.HorizontalAlignment = Enum.HorizontalAlignment.Center
 			UIListLayout_2.SortOrder = Enum.SortOrder.LayoutOrder
-			UIListLayout_2.Padding = UDim.new(0, 10)
-			UIListLayout_2.VerticalFlex = Enum.UIFlexAlignment.Fill
+			UIListLayout_2.Padding = UDim.new(0, BASE_PADDING)
+			UIListLayout_2.VerticalFlex = Enum.UIFlexAlignment.None
 
-			if Compkiller:_IsMobile() or TabConfig.EnableScrolling then
-				WindowArgs:AddUnbind(UIListLayout_2 , Right);
-				WindowArgs:AddUnbind(UIListLayout , Left);
-			end;
+			WindowArgs:AddUnbind(UIListLayout_2 , Right);
+			WindowArgs:AddUnbind(UIListLayout , Left);
 
 			if TabConfig.Type == "Single" then
 				Right.Visible = false;
@@ -7408,19 +7421,21 @@ function Compkiller.new(Config : Window)
 			Left.Size = UDim2.new(0.5, -3, 1, 0)
 			Left.ZIndex = 8
 			Left.BottomImage = ""
-			Left.CanvasSize = UDim2.new(0, 0, 0, 0)
 			Left.ScrollBarThickness = 0
 			Left.TopImage = ""
-
+			--Left.AutomaticCanvasSize = Enum.AutomaticSize.Y;
+			Left.CanvasSize = UDim2.new(0, 0, 0, 0)
+			
+			
 			UIListLayout:GetPropertyChangedSignal('AbsoluteContentSize'):Connect(function()
 				Left.CanvasSize = UDim2.fromOffset(0,UIListLayout.AbsoluteContentSize.Y)
-			end)
+			end);
 
 			UIListLayout.Parent = Left
 			UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 			UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
-			UIListLayout.VerticalFlex = Enum.UIFlexAlignment.Fill
-			UIListLayout.Padding = UDim.new(0, 10)
+			UIListLayout.VerticalFlex = Enum.UIFlexAlignment.None
+			UIListLayout.Padding = UDim.new(0, BASE_PADDING)
 
 			Right.Name = "Right"
 			Right.Parent = TabContent
@@ -7435,13 +7450,16 @@ function Compkiller.new(Config : Window)
 			Right.ZIndex = 8
 			Right.ScrollingEnabled = false
 			Right.BottomImage = ""
-			Right.CanvasSize = UDim2.new(0, 0, 0, 0)
 			Right.ScrollBarThickness = 0
 			Right.TopImage = ""
+			--Right.AutomaticCanvasSize = Enum.AutomaticSize.Y;
+			Right.CanvasSize = UDim2.new(0, 0, 0, 0)
 
 			Upvalue.Left = Left;
 			Upvalue.Right = Right;
-
+			Upvalue.LeftLayout = UIListLayout;
+			Upvalue.RightLayout = UIListLayout_2;
+			
 			UIListLayout_2:GetPropertyChangedSignal('AbsoluteContentSize'):Connect(function()
 				Right.CanvasSize = UDim2.fromOffset(0,UIListLayout_2.AbsoluteContentSize.Y)
 			end)
@@ -7449,13 +7467,11 @@ function Compkiller.new(Config : Window)
 			UIListLayout_2.Parent = Right
 			UIListLayout_2.HorizontalAlignment = Enum.HorizontalAlignment.Center
 			UIListLayout_2.SortOrder = Enum.SortOrder.LayoutOrder
-			UIListLayout_2.Padding = UDim.new(0, 10)
-			UIListLayout_2.VerticalFlex = Enum.UIFlexAlignment.Fill
+			UIListLayout_2.Padding = UDim.new(0, BASE_PADDING)
+			UIListLayout_2.VerticalFlex = Enum.UIFlexAlignment.None
 
-			if Compkiller:_IsMobile() or TabConfig.EnableScrolling then
-				WindowArgs:AddUnbind(UIListLayout_2 , Right);
-				WindowArgs:AddUnbind(UIListLayout , Left);
-			end;
+			WindowArgs:AddUnbind(UIListLayout_2 , Right);
+			WindowArgs:AddUnbind(UIListLayout , Left);
 
 			if Compkiller:_IsMobile() then
 				Compkiller:_AddDragBlacklist(Left);
@@ -7494,10 +7510,7 @@ function Compkiller.new(Config : Window)
 					Compkiller:_Animation(Highlight,Tween,{
 						BackgroundTransparency = 0.925
 					});
-
-
 				else
-
 					Compkiller:_Animation(Icon,Tween,{
 						ImageTransparency = 0.5
 					});
@@ -7607,16 +7620,96 @@ function Compkiller.new(Config : Window)
 					end;
 				end;
 			end);
-
-
 		end;
+		
+		function TabArgs:_UpdateScrolling(Frame: ScrollingFrame , ListLayout: UIListLayout)
+			local frame;
+			
+			local last = 0;
+			local scale = 0;
+			
+			local Offset = ListLayout.Padding.Offset;
+			local Childrens = Frame:GetChildren();
+			
+			for i,v in next ,Childrens do task.wait();
+				if v:IsA('Frame') then
+					if v.LayoutOrder > last then
+						scale += v.AbsoluteSize.Y + Offset;
+						
+						last = v.LayoutOrder;
+						frame = v;
+					end;
+				end;
+			end;
+			
+			task.wait();
+			
+			if frame then
+				local originalScale = frame:GetAttribute('OrigninalScale');
+				
+				if originalScale then
+					task.wait();
+
+					local Maximum = Frame.AbsoluteSize.Y;
+
+					local remainingHeight = Maximum - ((scale) - (frame.AbsoluteSize.Y));
+
+					if originalScale >= Frame.AbsoluteSize.Y then
+						Frame:SetAttribute('LayoutStacks',originalScale + 5);
+					else
+						Frame:SetAttribute('LayoutStacks',((remainingHeight) + 5));
+					end
+
+					task.wait();
+
+					local caller = WindowArgs.THREADS[frame];
+
+					if caller then
+						caller(true);
+					end;
+				end;
+			end;
+
+			task.wait();
+		end;
+		
+		TabArgs.SectionInfo = {};
+		
+		TabArgs.SectionClose = {
+			[Upvalue.Left] = {},
+			[Upvalue.Right] = {},
+		};
+		
+		TabArgs.LeftThread = coroutine.wrap(function()
+			task.wait();
+
+			while true do task.wait(0.01)
+				TabArgs:_UpdateScrolling(Upvalue.Left , Upvalue.LeftLayout);
+			end;
+		end);
+		
+		TabArgs.RightThread = coroutine.wrap(function()
+			task.wait(0.1);
+			
+			while true do task.wait(0.01)
+				TabArgs:_UpdateScrolling(Upvalue.Right , Upvalue.RightLayout);
+			end;
+		end);
+		
+		TabArgs.LeftThread();
+		TabArgs.RightThread();
 
 		function TabArgs:DrawSection(config: Section)
 			config = Compkiller.__CONFIG(config,{
 				Name = "Section",
 				Position = "left"
 			});
-
+			
+			local Parent = (TabConfig.Type == "Double" and ((string.lower(config.Position) == "left" and Upvalue.Left) or Upvalue.Right)) or Upvalue.Left;
+			local ParentLayout = (TabConfig.Type == "Double" and ((string.lower(config.Position) == "left" and Upvalue.LeftLayout) or Upvalue.RightLayout)) or Upvalue.LeftLayout;
+			
+			local IsOpen = true;
+			
 			local Section = Instance.new("Frame")
 			local UICorner = Instance.new("UICorner")
 			local UIStroke = Instance.new("UIStroke")
@@ -7626,7 +7719,7 @@ function Compkiller.new(Config : Window)
 			local SectionClose = Instance.new("ImageLabel")
 
 			Section.Name = "Section"
-			Section.Parent = (TabConfig.Type == "Double" and ((string.lower(config.Position) == "left" and Upvalue.Left) or Upvalue.Right)) or Upvalue.Left;
+			Section.Parent = Parent;
 
 			if TabConfig.Type == "Single" then
 				Section.Parent = Upvalue.Left;
@@ -7642,11 +7735,13 @@ function Compkiller.new(Config : Window)
 			if Compkiller:_IsMobile() then
 				Compkiller:_AddDragBlacklist(Section);
 			end;
-
+			
+			Section.LayoutOrder = #Parent:GetChildren() + 3;
 			Section.BorderColor3 = Color3.fromRGB(0, 0, 0)
 			Section.BorderSizePixel = 0
 			Section.Size = UDim2.new(1, 0, 0, 0)
 			Section.ZIndex = 9
+			Section.ClipsDescendants = true;
 
 			UICorner.CornerRadius = UDim.new(0, 6)
 			UICorner.Parent = Section
@@ -7711,18 +7806,53 @@ function Compkiller.new(Config : Window)
 			else
 				Header.Visible = true;
 			end;
+			
+			TabArgs.SectionInfo[Section] = {
+				UIListLayout = UIListLayout,
+			};
 
-			UIListLayout:GetPropertyChangedSignal('AbsoluteContentSize'):Connect(function()
+			local refresh = function(Upvalue)
 				if not SectionText.Text:byte() then
 					Header.Visible = false;
 				else
 					Header.Visible = true;
 				end;
-
-				Compkiller:_Animation(Section,TweenInfo.new(0.1),{
-					Size = UDim2.new(1, 0, 0, UIListLayout.AbsoluteContentSize.Y)
-				})
-			end);
+				
+				Section:SetAttribute('OrigninalScale',UIListLayout.AbsoluteContentSize.Y);
+				
+				if IsOpen then
+					if Upvalue == true then
+						local Dist = math.abs(Parent:GetAttribute('LayoutStacks') - Section.AbsoluteSize.Y);
+						local Size = UDim2.new(1, 0, 0, (Parent:GetAttribute('LayoutStacks') or UIListLayout.AbsoluteContentSize.Y));
+			
+						if Dist >= 99 then
+							Compkiller:_Animation(Section,TweenInfo.new(0.2,Enum.EasingStyle.Quad),{
+								Size = Size
+							});
+						else
+							Compkiller:_Animation(Section,TweenInfo.new(0.05),{
+								Size = Size
+							});
+						end;
+					else
+						Compkiller:_Animation(Section,TweenInfo.new(0.4,Enum.EasingStyle.Quint),{
+							Size = UDim2.new(1, 0, 0, UIListLayout.AbsoluteContentSize.Y - 1)
+						});
+					end;
+					
+					TabArgs.SectionClose[Parent][Section] = nil;
+				else
+					TabArgs.SectionClose[Parent][Section] = Section;
+					
+					Compkiller:_Animation(Section,TweenInfo.new(0.4,Enum.EasingStyle.Quint),{
+						Size = UDim2.new(1, 0, 0, 35)
+					});
+				end;
+			end;
+			
+			WindowArgs.THREADS[Section] = refresh;
+			
+			UIListLayout:GetPropertyChangedSignal('AbsoluteContentSize'):Connect(refresh);
 
 			TabOpenSignal:Connect(function(bool)
 				if bool then
@@ -7750,6 +7880,22 @@ function Compkiller.new(Config : Window)
 						ImageTransparency = 1
 					})
 				end;
+			end);
+			
+			Compkiller:_Input(Header,function()
+				IsOpen = not IsOpen;
+				
+				if IsOpen then
+					Compkiller:_Animation(SectionClose,TweenInfo.new(0.35),{
+						Rotation = 0
+					});
+				else
+					Compkiller:_Animation(SectionClose,TweenInfo.new(0.35),{
+						Rotation = -180
+					});
+				end;
+				
+				refresh();
 			end);
 
 			return Compkiller:_LoadElement(Section , true , TabOpenSignal)
