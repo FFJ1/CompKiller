@@ -4068,7 +4068,7 @@ function Compkiller:_LoadElement(Parent: Frame , EnabledLine: boolean , Signal)
 			local Size = (Value - Config.Min) / (Config.Max - Config.Min);
 
 			TweenService:Create(SliderInput , TweenInfo.new(0.2),{
-				Size = UDim2.new(Size, 0, 1, 0)
+				Size = UDim2.new(math.clamp(Size,0.045,1), 0, 1, 0)
 			}):Play();
 
 			Config.Default = Value;
@@ -7132,7 +7132,7 @@ function Compkiller.new(Config : Window)
 						Icon = Compkiller:_GetIcon(Config.Logo),
 						Content = "Create config \""..TextBox.Text.."\""
 					})
-					
+
 					Configuration.Config:WriteConfig({
 						Name = TextBox.Text,
 						Author = WindowArgs.Username,
@@ -7168,7 +7168,7 @@ function Compkiller.new(Config : Window)
 							Icon = Compkiller:_GetIcon(Config.Logo),
 							Content = "Load config \""..v.Name.."\""
 						})
-						
+
 						Configuration.Config:LoadConfig(v.Name);
 					end;
 
@@ -7178,7 +7178,7 @@ function Compkiller.new(Config : Window)
 							Icon = Compkiller:_GetIcon(Config.Logo),
 							Content = "Save config \""..v.Info.Author.."\""
 						})
-						
+
 						local NewAuthorText = ((v.Info.Author == WindowArgs.Username) and  WindowArgs.Username) or v.Info.Author .. " [EDIT]";
 
 						Button:SetInfo(NewAuthorText,v.Name);
@@ -7195,7 +7195,7 @@ function Compkiller.new(Config : Window)
 							Icon = Compkiller:_GetIcon(Config.Logo),
 							Content = "Delete config \""..v.Name.."\""
 						})
-						
+
 						Configuration.Config:DeleteConfig(v.Name)
 					end
 				end;
@@ -7867,7 +7867,7 @@ function Compkiller.new(Config : Window)
 			end;
 
 			WindowArgs.THREADS[Section] = refresh;
-			
+
 			local refreshScale = function()
 				local Childrens = Parent:GetChildren();
 				local Latest = 0;
@@ -7883,7 +7883,7 @@ function Compkiller.new(Config : Window)
 									v:SetAttribute('Height',nil);
 									WindowArgs.THREADS[v]();
 								end;
-								
+
 								Latest += 1;
 							end;
 						end;
@@ -7910,20 +7910,20 @@ function Compkiller.new(Config : Window)
 
 						Section:SetAttribute('Height',remainingHeight);
 					end;
-					
+
 					refresh();
 				else
 					Section:SetAttribute('Height',nil);
 				end;
 			end;
-			
+
 			Section.ChildAdded:Connect(refreshScale)
 
 			Section:SetAttribute('HEIGHTSCALE',UIListLayout.AbsoluteContentSize.Y);
-			
+
 			UIListLayout:GetPropertyChangedSignal('AbsoluteContentSize'):Connect(function()
 				Section:SetAttribute('HEIGHTSCALE',UIListLayout.AbsoluteContentSize.Y);
-				
+
 				refresh()
 			end);
 
@@ -7969,7 +7969,7 @@ function Compkiller.new(Config : Window)
 				end;
 
 				refresh();
-				
+
 				refreshScale();
 			end);
 
@@ -8530,12 +8530,12 @@ function Compkiller:ConfigManager(ConfigManager: ConfigManager) : ConfigFunction
 		Directory = Compkiller:_Path(ConfigManager.Directory , ConfigManager.Config);
 		EnableNotify = false,
 	};
-	
+
 	local notify = Compkiller.newNotify();
 
 	function Args:WriteConfig(Config: WriteConfig)
-		
-		
+
+
 		Config = Compkiller.__CONFIG(Config , {
 			Name = Compkiller:_RandomString(),
 			Author = LocalPlayer.Name,
@@ -8549,7 +8549,7 @@ function Compkiller:ConfigManager(ConfigManager: ConfigManager) : ConfigFunction
 			Name = Config.Name,
 			CreatedDate = Compkiller:GetDate()
 		};
-		
+
 		if Args.EnableNotify then
 			notify.new({
 				Title = "Configs",
@@ -8637,7 +8637,7 @@ function Compkiller:ConfigManager(ConfigManager: ConfigManager) : ConfigFunction
 
 	function Args:DeleteConfig(ConfigName)
 		local _path = Compkiller:_Path(Args.Directory,ConfigName);
-		
+
 		if Args.EnableNotify then
 			notify.new({
 				Title = "Configs",
@@ -8645,7 +8645,7 @@ function Compkiller:ConfigManager(ConfigManager: ConfigManager) : ConfigFunction
 				Content = "Delete config \""..ConfigName.."\""
 			})
 		end
-		
+
 		if isfile(_path) then
 			delfile(_path);
 		end;
@@ -8664,7 +8664,7 @@ function Compkiller:ConfigManager(ConfigManager: ConfigManager) : ConfigFunction
 			local decoded = HttpService:JSONDecode(info);
 
 			local Flags = Compkiller:GetConfig("KV");
-			
+
 			if Args.EnableNotify then
 				notify.new({
 					Title = "Configs",
@@ -8672,7 +8672,7 @@ function Compkiller:ConfigManager(ConfigManager: ConfigManager) : ConfigFunction
 					Content = "Load config \""..ConfigName.."\""
 				})
 			end
-			
+
 			for i,v in next , decoded do
 				if v and v.Flag then
 
@@ -8808,7 +8808,7 @@ function Compkiller.newNotify()
 	if Compkiller.NOTIFY_CACHE then
 		return Compkiller.NOTIFY_CACHE;
 	end;
-	
+
 	local Notification = Instance.new("ScreenGui")
 	local NotifyContainer = Instance.new("Frame")
 	local UIListLayout = Instance.new("UIListLayout")
@@ -9043,7 +9043,7 @@ function Compkiller.newNotify()
 			}
 		end,
 	};
-	
+
 	return Compkiller.NOTIFY_CACHE;
 end;
 
