@@ -7876,11 +7876,13 @@ function Compkiller.new(Config : Window)
 				local Childrens = Parent:GetChildren();
 				local Latest = 0;
 				local frameFound = 0;
-
-				for i,v in next , Childrens do task.wait();
+				local allscale = 0;
+				
+				for i,v: Frame in next , Childrens do task.wait();
 					if v:IsA('Frame') then
 						if v ~= Section then
 							frameFound += 1;
+							allscale += v:GetAttribute('HEIGHTSCALE');
 
 							if v.LayoutOrder < Section.LayoutOrder then
 								if WindowArgs.THREADS[v] then
@@ -7899,7 +7901,7 @@ function Compkiller.new(Config : Window)
 				end;
 
 				if Latest >= frameFound then
-					if UIListLayout.AbsoluteContentSize.Y >= (Parent.AbsoluteSize.Y - 1) or ParentLayout.AbsoluteContentSize.Y >= (Parent.AbsoluteSize.Y - 1) then
+					if allscale >= (Parent.AbsoluteSize.Y - 1) then
 						Section:SetAttribute('Height',nil);
 					else
 						local parentScale = 0;
@@ -7929,7 +7931,7 @@ function Compkiller.new(Config : Window)
 			Section:SetAttribute('HEIGHTSCALE',UIListLayout.AbsoluteContentSize.Y);
 
 			UIListLayout:GetPropertyChangedSignal('AbsoluteContentSize'):Connect(function()
-				Section:SetAttribute('HEIGHTSCALE',UIListLayout.AbsoluteContentSize.Y);
+				Section:SetAttribute('HEIGHTSCALE',math.max(UIListLayout.AbsoluteContentSize.Y , Section:GetAttribute('HEIGHTSCALE')));
 
 				refresh()
 			end);
