@@ -7901,7 +7901,7 @@ function Compkiller.new(Config : Window)
 				end;
 
 				if Latest >= frameFound then
-					if allscale >= (Parent.AbsoluteSize.Y - 1) then
+					if allscale >= (Parent.AbsoluteSize.Y - 1) or UIListLayout.AbsoluteContentSize.Y >= (Parent.AbsoluteSize.Y - 1) then
 						Section:SetAttribute('Height',nil);
 					else
 						local parentScale = 0;
