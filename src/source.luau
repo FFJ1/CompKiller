@@ -6009,11 +6009,19 @@ function Compkiller.new(Config : Window)
 	end;
 
 	function WindowArgs:AddUnbind(UilistLayout: UIListLayout , Scrolling)
-
-		UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+		
+		local upd = function()
 			Scrolling.ScrollingEnabled = true
 			UilistLayout.VerticalFlex = Enum.UIFlexAlignment.None;
 			Scrolling.CanvasSize = UDim2.fromOffset(0,UilistLayout.AbsoluteContentSize.Y + 5)
+		end;
+		
+		UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(upd);
+		
+		return task.defer(function()
+			while true do task.wait(1)
+				upd();
+			end;
 		end)
 
 		--[[local Parent: ScrollingFrame = UilistLayout.Parent;
@@ -7261,7 +7269,6 @@ function Compkiller.new(Config : Window)
 			Left.BorderColor3 = Color3.fromRGB(0, 0, 0)
 			Left.BorderSizePixel = 0
 			Left.ClipsDescendants = false
-			Left.ScrollingEnabled = false;
 			Left.Position = UDim2.new(0.25, -3, 0.5, 0)
 			Left.Size = UDim2.new(0.5, -3, 1, 0)
 			Left.ZIndex = 8
@@ -7292,7 +7299,6 @@ function Compkiller.new(Config : Window)
 			Right.Position = UDim2.new(0.75, 3, 0.5, 0)
 			Right.Size = UDim2.new(0.5, -3, 1, 0)
 			Right.ZIndex = 8
-			Right.ScrollingEnabled = false
 			Right.BottomImage = ""
 			--Right.AutomaticCanvasSize = Enum.AutomaticSize.Y;
 			Right.CanvasSize = UDim2.new(0, 0, 0, 0)
@@ -7441,7 +7447,6 @@ function Compkiller.new(Config : Window)
 			Left.BorderColor3 = Color3.fromRGB(0, 0, 0)
 			Left.BorderSizePixel = 0
 			Left.ClipsDescendants = false
-			Left.ScrollingEnabled = false;
 			Left.Position = UDim2.new(0.25, -3, 0.5, 0)
 			Left.Size = UDim2.new(0.5, -3, 1, 0)
 			Left.ZIndex = 8
@@ -7473,7 +7478,6 @@ function Compkiller.new(Config : Window)
 			Right.Position = UDim2.new(0.75, 3, 0.5, 0)
 			Right.Size = UDim2.new(0.5, -3, 1, 0)
 			Right.ZIndex = 8
-			Right.ScrollingEnabled = false
 			Right.BottomImage = ""
 			Right.ScrollBarThickness = 0
 			Right.TopImage = ""
@@ -7848,11 +7852,11 @@ function Compkiller.new(Config : Window)
 				if IsOpen then
 					if Section:GetAttribute('Height') then
 						Compkiller:_Animation(Section,TweenInfo.new(0.4,Enum.EasingStyle.Quint),{
-							Size = UDim2.new(1, 0, 0, Section:GetAttribute('Height') - 1)
+							Size = UDim2.new(1, 0, 0, math.abs(Section:GetAttribute('Height')) - 1)
 						});
 					else
 						Compkiller:_Animation(Section,TweenInfo.new(0.4,Enum.EasingStyle.Quint),{
-							Size = UDim2.new(1, 0, 0, UIListLayout.AbsoluteContentSize.Y - 1)
+							Size = UDim2.new(1, 0, 0, math.abs(UIListLayout.AbsoluteContentSize.Y) - 1)
 						});
 					end;
 
@@ -7895,7 +7899,7 @@ function Compkiller.new(Config : Window)
 				end;
 
 				if Latest >= frameFound then
-					if UIListLayout.AbsoluteContentSize.Y > Parent.AbsoluteSize.Y then
+					if UIListLayout.AbsoluteContentSize.Y >= (Parent.AbsoluteSize.Y - 1) or ParentLayout.AbsoluteContentSize.Y >= (Parent.AbsoluteSize.Y - 1) then
 						Section:SetAttribute('Height',nil);
 					else
 						local parentScale = 0;
@@ -7910,14 +7914,17 @@ function Compkiller.new(Config : Window)
 
 						Section:SetAttribute('Height',remainingHeight);
 					end;
-
-					refresh();
 				else
 					Section:SetAttribute('Height',nil);
 				end;
+				
+				refresh();
 			end;
 
-			Section.ChildAdded:Connect(refreshScale)
+			Section.ChildAdded:Connect(function()
+				task.wait()
+				refreshScale();
+			end)
 
 			Section:SetAttribute('HEIGHTSCALE',UIListLayout.AbsoluteContentSize.Y);
 
