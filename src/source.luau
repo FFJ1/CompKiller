@@ -330,7 +330,7 @@ local Mouse: Mouse = LocalPlayer:GetMouse();
 local CurrentCamera: Camera? = workspace.CurrentCamera;
 
 local Compkiller = {
-	Version = '1.7',
+	Version = '1.8',
 	Logo = "rbxassetid://120245531583106",
 	Windows = {},
 	Scale = {
@@ -6009,15 +6009,15 @@ function Compkiller.new(Config : Window)
 	end;
 
 	function WindowArgs:AddUnbind(UilistLayout: UIListLayout , Scrolling)
-		
+
 		local upd = function()
 			Scrolling.ScrollingEnabled = true
 			UilistLayout.VerticalFlex = Enum.UIFlexAlignment.None;
 			Scrolling.CanvasSize = UDim2.fromOffset(0,UilistLayout.AbsoluteContentSize.Y + 5)
 		end;
-		
+
 		UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(upd);
-		
+
 		return task.defer(function()
 			while true do task.wait(1)
 				upd();
@@ -7877,12 +7877,12 @@ function Compkiller.new(Config : Window)
 				local Latest = 0;
 				local frameFound = 0;
 				local allscale = 0;
-				
+
 				for i,v: Frame in next , Childrens do task.wait();
 					if v:IsA('Frame') then
 						if v ~= Section then
 							frameFound += 1;
-							allscale += v:GetAttribute('HEIGHTSCALE');
+							allscale += v:GetAttribute('HEIGHTSCALE') or v.AbsoluteSize.Y;
 
 							if v.LayoutOrder < Section.LayoutOrder then
 								if WindowArgs.THREADS[v] then
@@ -7901,7 +7901,7 @@ function Compkiller.new(Config : Window)
 				end;
 
 				if Latest >= frameFound then
-					if allscale >= (Parent.AbsoluteSize.Y - 1) or UIListLayout.AbsoluteContentSize.Y >= (Parent.AbsoluteSize.Y - 1) then
+					if allscale >= (Parent.AbsoluteSize.Y - 25) or UIListLayout.AbsoluteContentSize.Y >= (Parent.AbsoluteSize.Y - 25) then
 						Section:SetAttribute('Height',nil);
 					else
 						local parentScale = 0;
@@ -7909,7 +7909,7 @@ function Compkiller.new(Config : Window)
 						for i,v in next , Parent:GetChildren() do
 							if v:IsA('Frame') then
 								parentScale += v:GetAttribute('HEIGHTSCALE') + ParentLayout.Padding.Offset;
-							end
+							end;
 						end;
 
 						local remainingHeight = UIListLayout.AbsoluteContentSize.Y + (Parent.AbsoluteSize.Y - (parentScale));
@@ -7919,7 +7919,7 @@ function Compkiller.new(Config : Window)
 				else
 					Section:SetAttribute('Height',nil);
 				end;
-				
+
 				refresh();
 			end;
 
