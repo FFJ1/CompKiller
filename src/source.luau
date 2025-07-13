@@ -1,5 +1,5 @@
 --[[
-    		Fatality-Dark Interface
+    		Compkiller Interface
 
     Author: 4lpaca
     License: MIT
