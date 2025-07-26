@@ -7739,7 +7739,7 @@ function Compkiller.new(Config : Window)
 
 			local IsOpen = true;
 
-			local Section = Instance.new("Frame")
+			local Section = Instance.new("ScrollingFrame")
 			local UICorner = Instance.new("UICorner")
 			local UIStroke = Instance.new("UIStroke")
 			local UIListLayout = Instance.new("UIListLayout")
